@@ -24,26 +24,26 @@ class Agent {
 			if(e == null)
 				break;
 			m.setDestination(e.getX(), e.getY());
-			GameState init = new GameState(m);
-			GameState goal = new GameState(m);
-			GameState path = new GameState(m);
-			path.state[0] = m.getX();
-			path.state[1] = m.getY();
-			goal.state[0] = m.getDestinationX();
-			goal.state[1] = m.getDestinationY();
-			path = goal;
-			if(path.state[0] == goal.state[0] && path.state[1] == goal.state[1])
-				throw new RuntimeException("This shouldn't happen unti later");
-			while((int)path.state[0] != (int)goal.state[0] && (int)path.state[1] != (int)goal.state[1])
-			{
-				GameState current = plan.uniformCostSearch(init, path);
-				LinkedList<GameState> results = GameState.getSuccessors(current);
-				path = results.get(results.size()-2); // First step
-				System.out.println("X: " + path.state[0]);
-				System.out.println("Y: " + path.state[1]);
-				m.setDestination(path.state[0], path.state[1]);
-				init = path;
-			}
+			// GameState init = new GameState(m);
+			// GameState goal = new GameState(m);
+			// GameState path = new GameState(m);
+			// path.state[0] = m.getX();
+			// path.state[1] = m.getY();
+			// goal.state[0] = m.getDestinationX();
+			// goal.state[1] = m.getDestinationY();
+			// //path = goal;
+			// if(path.state[0] == goal.state[0] && path.state[1] == goal.state[1])
+			// 	throw new RuntimeException("This shouldn't happen unti later");
+			// while((int)path.state[0] != (int)goal.state[0] && (int)path.state[1] != (int)goal.state[1])
+			// {
+			// 	GameState current = plan.uniformCostSearch(init, goal);
+			// 	LinkedList<GameState> results = GameState.getSuccessors(current);
+			// 	path = results.get(results.size()-2); // First step
+			// 	System.out.println("X: " + path.state[0]);
+			// 	System.out.println("Y: " + path.state[1]);
+			// 	m.setDestination(path.state[0], path.state[1]);
+			// 	init = path;
+			//}
 		}
 	}
 
@@ -139,6 +139,7 @@ class MyPlanner
 	}
 	GameState transition(GameState prev, int a)
 	{
+		// TODO: Check to make sure move is still inside the terrain.
 		GameState trans = new GameState(prev.cost, prev, prev.model);
 		if(a == 0) // x+10, y-10
 		{
