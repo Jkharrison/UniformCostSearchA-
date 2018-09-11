@@ -14,8 +14,7 @@ import javax.imageio.ImageIO;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseListener;
 
-public class View extends JFrame implements ActionListener
-{
+public class View extends JFrame implements ActionListener {
 	Controller controller;
 	Model model;
 	private MyPanel panel;
