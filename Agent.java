@@ -180,7 +180,6 @@ class MyPlanner
 			for(int i = 0; i < 8; i++)
 			{
 				GameState child = transition(s, i);
-				// float acost = actionCost(s, i);
 				if(child != null)
 				{
 					if(visited.contains(child))
@@ -210,7 +209,8 @@ class MyPlanner
 	}
 	GameState AStarSearch(GameState start, GameState goal, Model m)
 	{
-		frontier = new PriorityQueue<GameState>(costComp);
+		AStarComparator AStarComp = new AStarComparator(m, goal);
+		frontier = new PriorityQueue<GameState>(AStarComp);
 		visited = new TreeSet<GameState>(stateComp);
 		start.cost = 0.0f;
 		start.parent = null;
@@ -224,14 +224,14 @@ class MyPlanner
 				// Also flush queue before returning the goal state.
 				return s;
 			}
-			float heurstic = (float)(1 / m.getTravelSpeed(100, 100));
-			heurstic *= m.getDistanceToDestination(0);
+			// float heurstic = (float)(1 / m.getTravelSpeed(646, 317));
+			// heurstic *= (m.getDistanceToDestination(0) / 10);
 			for(int i = 0; i < 8; i++)
 			{
 				GameState child = transition(s, i);
 				if(child != null)
 				{
-					child.cost += heurstic;
+					//child.cost += heurstic;
 					if(visited.contains(child))
 					{
 						GameState oldChild = visited.floor(child);
@@ -270,19 +270,19 @@ class MyPlanner
 		}
 		else if(a == 1) // x+10, y
 		{
-			
+
 			trans.state[0] += 10;
 			if(trans.state[0] >= 0.0f && trans.state[0] <= Model.XMAX && trans.state[1] >= 0.0f && trans.state[1] <= Model.YMAX)
 			{
 				trans.cost += 1 / (trans.model.getTravelSpeed(trans.state[0], trans.state[1]));
 				return trans;
 			}
-			else 
+			else
 				return null;
 		}
 		else if(a == 2) // x+10, y+10
 		{
-			
+
 			trans.state[0] += 10;
 			trans.state[1] += 10;
 			if(trans.state[0] >= 0.0f && trans.state[0] <= Model.XMAX && trans.state[1] >= 0.0f && trans.state[1] <= Model.YMAX)
@@ -295,7 +295,7 @@ class MyPlanner
 		}
 		else if(a == 3) // x, y+10
 		{
-			
+
 			trans.state[1] += 10;
 			if(trans.state[0] >= 0.0f && trans.state[0] <= Model.XMAX && trans.state[1] >= 0.0f && trans.state[1] <= Model.YMAX)
 			{
@@ -307,7 +307,7 @@ class MyPlanner
 		}
 		else if(a == 4) // x, y-10
 		{
-			
+
 			trans.state[1] -= 10;
 			if(trans.state[0] >= 0.0f && trans.state[0] <= Model.XMAX && trans.state[1] >= 0.0f && trans.state[1] <= Model.YMAX)
 			{
@@ -319,7 +319,7 @@ class MyPlanner
 		}
 		else if(a == 5)// x-10, y-10
 		{
-			
+
 			trans.state[0] -= 10;
 			trans.state[1] -= 10;
 			if(trans.state[0] >= 0.0f && trans.state[0] <= Model.XMAX && trans.state[1] >= 0.0f && trans.state[1] <= Model.YMAX)
@@ -332,7 +332,7 @@ class MyPlanner
 		}
 		else if(a == 6) // x-10, y
 		{
-			
+
 			trans.state[0] -= 10;
 			if(trans.state[0] >= 0.0f && trans.state[0] <= Model.XMAX && trans.state[1] >= 0.0f && trans.state[1] <= Model.YMAX)
 			{
@@ -344,7 +344,7 @@ class MyPlanner
 		}
 		else if(a == 7) // x-10, y+10
 		{
-			
+
 			trans.state[0] -= 10;
 			trans.state[1] += 10;
 			if(trans.state[0] >= 0.0f && trans.state[0] <= Model.XMAX && trans.state[1] >= 0.0f&& trans.state[1] <= Model.YMAX)
@@ -359,6 +359,34 @@ class MyPlanner
 		{
 			throw new RuntimeException("Shouldn't reach this point");
 		}
+	}
+}
+class AStarComparator implements Comparator<GameState>
+{
+	GameState goal;
+	float alpha;
+	float heurstic;
+	Model model;
+	AStarComparator(Model m, GameState g)
+	{
+		this.model = m;
+		this.heurstic = (1/(float)this.model.getTravelSpeed(646, 317));
+		// this.goal = new GameState(m);
+		// this.goal.state[0] = m.getDestinationX();
+		// this.goal.state[1] = m.getDestinationY();
+		this.goal = g;
+	}
+	public int compare(GameState a, GameState b)
+	{
+		if(a.cost + distanceToGoal(a)*heurstic/10 < b.cost + distanceToGoal(b)*heurstic/10)
+			return -1;
+		if(a.cost + distanceToGoal(a)*heurstic/10 > b.cost + distanceToGoal(b)*heurstic/10)
+			return 1;
+		return 0;
+	}
+	public float distanceToGoal(GameState gs)
+	{
+		return (float)Math.sqrt(((gs.state[0] - goal.state[0])* (gs.state[0] - goal.state[0])) + ((gs.state[1] - goal.state[1]) * (gs.state[1]-goal.state[1])));
 	}
 }
 class CostComparator implements Comparator<GameState>

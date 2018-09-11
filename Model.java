@@ -54,7 +54,7 @@ class Model {
 				yy = 59 - yy;
 			}
 			int pos = 4 * (60 * yy + xx);
-			return Math.max(0.2f, Math.min(3.5f, -0.01f * (terrain[pos + 1] & 0xff) + 0.02f * (terrain[pos + 3] & 0xff)));		
+			return Math.max(0.2f, Math.min(3.5f, -0.01f * (terrain[pos + 1] & 0xff) + 0.02f * (terrain[pos + 3] & 0xff)));
 	}
 
 	Controller getController() { return controller; }
@@ -70,7 +70,7 @@ class Model {
 	}
 	double getLowestCostSquare()
 	{
-		
+
 		return 0.0;
 	}
 	double getDistanceToDestination(int sprite) {
